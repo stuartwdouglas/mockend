@@ -17,14 +17,20 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SseResourceIT {
+import io.quarkus.test.common.http.TestHTTPResource;
+import io.quarkus.test.junit.QuarkusTest;
 
+@QuarkusTest
+public class SseResourceTest {
+
+    @TestHTTPResource("sse/")
     URI uri;
+    @TestHTTPResource("crud/")
+    URI crudUri;
     HttpClient client;
 
     @BeforeEach
     public void init() {
-        this.uri = URI.create("http://localhost:8080/sse");
         this.client = HttpClient.newHttpClient();
     }
 
@@ -37,19 +43,18 @@ public class SseResourceIT {
         postMessage(expectedPayload);
         var data =lines.filter(line -> line.startsWith("data")).findFirst();
         assertTrue(data.isPresent());
-        assertTrue(data.get().contains(expectedPayload));            
-        
+        assertTrue(data.get().contains(expectedPayload));
+
     }
 
-    
-    
+
+
     public void postMessage(String message) throws IOException,InterruptedException{
         var input = """
         {
           "message":"%s"
         }
                 """.formatted(message);
-        var crudUri = URI.create("http://localhost:8080/crud/");
         var request = HttpRequest.newBuilder(crudUri).POST(BodyPublishers.ofString(input))
         .header("Content-type", "application/json").build();
         var response = client.send(request, BodyHandlers.ofString());

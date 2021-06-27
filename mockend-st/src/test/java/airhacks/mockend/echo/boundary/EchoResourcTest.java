@@ -13,14 +13,19 @@ import java.net.http.HttpResponse.BodyHandlers;
 
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.common.http.TestHTTPResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 
-public class EchoResourceIT {
+@QuarkusTest
+public class EchoResourcTest {
 
+
+    @TestHTTPResource("echo")
+    URI uri;
 
     @Test
     public void echo() throws IOException, InterruptedException {
-        var uri = URI.create("http://localhost:8080/echo");
         var client = HttpClient.newHttpClient();
         var input = "duke";
         var request = HttpRequest.newBuilder(uri).POST(BodyPublishers.ofString(input)).header("Content-type","text/plain").build();
@@ -33,8 +38,8 @@ public class EchoResourceIT {
         assertTrue(body.startsWith("echo:"));
 
 
-        
+
     }
 
-    
+
 }

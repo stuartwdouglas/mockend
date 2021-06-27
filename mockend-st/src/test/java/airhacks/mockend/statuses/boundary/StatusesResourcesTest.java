@@ -10,14 +10,19 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class StatusesResourcesIT {
+import io.quarkus.test.common.http.TestHTTPResource;
+import io.quarkus.test.junit.QuarkusTest;
 
+@QuarkusTest
+public class StatusesResourcesTest {
+
+    @TestHTTPResource("statuses")
     URI uri;
     HttpClient client;
 
+
     @BeforeEach
     public void init() {
-        this.uri = URI.create("http://localhost:8080/statuses");
         this.client = HttpClient.newHttpClient();
     }
 
@@ -34,5 +39,5 @@ public class StatusesResourcesIT {
         assertEquals(expected,status);
 
     }
-    
+
 }

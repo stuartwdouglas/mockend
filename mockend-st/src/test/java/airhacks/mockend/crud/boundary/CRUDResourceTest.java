@@ -14,17 +14,22 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CRUDResourceIT {
+import io.quarkus.test.common.http.TestHTTPResource;
+import io.quarkus.test.junit.QuarkusTest;
 
+@QuarkusTest
+public class CRUDResourceTest {
+
+
+    @TestHTTPResource("crud/")
     URI uri;
     HttpClient client;
 
     @BeforeEach
     public void init() {
-        this.uri = URI.create("http://localhost:8080/crud/");
         this.client = HttpClient.newHttpClient();
     }
-    
+
     @Test
     public void createWithPut() throws IOException, InterruptedException {
         var input = """
@@ -43,7 +48,7 @@ public class CRUDResourceIT {
         assertTrue(location.endsWith(id));
         assertEquals(201, status);
     }
-    
+
     @Test
     public void updateWithPut() throws IOException, InterruptedException {
         var input = """
@@ -68,7 +73,7 @@ public class CRUDResourceIT {
         headers = response.headers();
         assertEquals(204, status);
     }
-    
+
     @Test
     public void createWithPOST() throws IOException, InterruptedException {
         var input = """
@@ -87,7 +92,7 @@ public class CRUDResourceIT {
         assertEquals(201, status);
     }
 
-    
+
     @Test
     public void createWithPOSTAndFetchList() throws IOException, InterruptedException {
         this.createWithPOST();
@@ -99,7 +104,7 @@ public class CRUDResourceIT {
         assertNotNull(body);
         System.out.println(body);
     }
-    
+
     @Test
     public void deleteEverything() throws IOException, InterruptedException {
         this.createWithPOST();
